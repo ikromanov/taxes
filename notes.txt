@@ -1,0 +1,15 @@
+Federal
+Form 1040
+1. Medicare tax is withheld at 1.45% rate. For income > 250000 extra 0.9% is collected.
+Additional forms to be completed: 
+    1) Schedule 2 (form 1040);
+    2) form 8919.
+2. Social Security tax income is capped (currently $168,600 per person), tax rate is 6.2%.
+3. Federal tax base = total_income - 401K contributions - standard deduction (29,200).
+
+
+NY
+
+
+
+PA
