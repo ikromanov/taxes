@@ -1,3 +1,6 @@
+
+from __future__ import annotations
+
 class Tax:
     """
     A simple tax calculator that supports progressive tax brackets and optional deductions.
@@ -38,11 +41,14 @@ class Tax:
         tax = 0
         previous_bracket = 0
         for i, bracket in enumerate(self.brackets):
+            # print("Bracket: ", bracket)
             if self.taxable_income > bracket:
                 tax += (bracket - previous_bracket) * self.rates[i]
                 previous_bracket = bracket
+                # print("Rolling sum Tax: ", tax)
             else:
                 tax += (self.taxable_income - previous_bracket) * self.rates[i]
+                # print("Tax: ", tax)
                 break
         else:
             # In case income exceeds the highest bracket
@@ -76,6 +82,8 @@ class StateTax(Tax):
         brackets = []
         rates = []
         deductions = 0
+        child_deduction = 1000
+
         if self.state == "PA":
             brackets = [float("inf")]
             rates = [0.0307]
@@ -84,7 +92,7 @@ class StateTax(Tax):
             brackets = [17150, 23600, 27900, 161550, 323200, 2155350, 5000000, 25000000, float("inf")]
             rates = [0.04, 0.045, 0.0525, 0.055, .06, 0.0685, 0.0965, 0.103, 0.109]
             ny_std_deduction = 16050
-            deductions = ny_std_deduction + contr401k
+            deductions = ny_std_deduction + contr401k + child_deduction
 
         super().__init__(income, brackets, rates, deductions)
 
@@ -177,6 +185,8 @@ class Budget:
         return self.local_tax() - self.local_tax_paid
 
     def eff_tax_rate(self):
+        if self.total_income == 0:
+            return 0.0
         return round(self.total_tax() / self.total_income * 100, 2)
 
     def print_summary(self):
@@ -211,20 +221,20 @@ if __name__ == "__main__":
 
     budget.print_summary()
 
-    # income = ivan_w2 + olga_w2 + other_income
-    # contr401k = ivan_401k + olga_401k
-    # fed_tax = FederalTax(income, contr401k)
-    # state_tax = StateTax(income, contr401k, "NY")
-    # local_tax = LocalTax(income, "NY")
-    # social_sec_tax = SocialSecurityTax(ivan_w2, olga_w2)
-    # medicare_tax = MedicareTax(income)
-    #
-    # fed_tax.print_summary()
-    # print("===========")
-    # state_tax.print_summary()
-    # print("===========")
-    # local_tax.print_summary()
-    # print("===========")
-    # social_sec_tax.print_summary()
-    # print("===========")
-    # medicare_tax.print_summary()
+    income = ivan_w2 + olga_w2 + other_income
+    contr401k = ivan_401k + olga_401k
+    fed_tax = FederalTax(income, contr401k)
+    state_tax = StateTax(income, contr401k, "NY")
+    local_tax = LocalTax(income, "NY")
+    social_sec_tax = SocialSecurityTax(ivan_w2, olga_w2)
+    medicare_tax = MedicareTax(income)
+
+    fed_tax.print_summary()
+    print("===========")
+    state_tax.print_summary()
+    print("===========")
+    local_tax.print_summary()
+    print("===========")
+    social_sec_tax.print_summary()
+    print("===========")
+    medicare_tax.print_summary()
