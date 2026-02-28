@@ -161,8 +161,7 @@ class Budget:
         return StateTax(self.total_income, self.contr401k1 + self.contr401k2, self.state).calculate_tax()
 
     def local_tax(self):
-        # return LocalTax(self.total_income, self.state).calculate_tax()
-        return LocalTax(self.total_income, "PA").calculate_tax()
+        return LocalTax(self.total_income, self.state).calculate_tax()
 
     def social_sec_tax(self):
         return SocialSecurityTax(self.income1, self.income2).calculate_tax()
@@ -191,9 +190,12 @@ class Budget:
 
     def print_summary(self):
         print("Total Income:", self.total_income)
-        print(f"Federal Tax owed (incl. Medicare & SS): {self.federal_tax_owed()}",)
-        print(f"{self.state.upper()} State Tax owed: {self.state_tax()} - {self.state_tax_paid} = {self.state_tax_owed()}",)
-        print(f"PA Local Tax owed: {self.local_tax()} - {self.local_tax_paid} = {self.local_tax_owed()}",)
+        print(f"Federal tax (incl. Medicare & SS): {self.federal_tax() + self.social_sec_tax() + self.medicare_tax()}")
+        print(f"State tax ({self.state}): {self.state_tax()}")
+        print(f"Local tax: {self.local_tax()}")
+        # print(f"Federal Tax owed (incl. Medicare & SS): {self.federal_tax_owed()}",)
+        # print(f"{self.state.upper()} State Tax owed: {self.state_tax()} - {self.state_tax_paid} = {self.state_tax_owed()}",)
+        # print(f"PA Local Tax owed: {self.local_tax()} - {self.local_tax_paid} = {self.local_tax_owed()}",)
         print(f"Total Tax Liability: {self.total_tax()}")
         print(f"Effective Tax Rate: {self.eff_tax_rate()}%")
 
@@ -207,6 +209,7 @@ if __name__ == "__main__":
     olga_401k = 23000
 
     state = "NY"
+    # state = "PA"
 
     # paid = (63603 + 10453 + 5859 + 26450 + 3028) + (62267 + 10453 + 5063 + 18993)
 
@@ -219,7 +222,7 @@ if __name__ == "__main__":
     budget = Budget(ivan_w2, olga_w2, other_income, ivan_401k, olga_401k, state,
                     fed_paid, ny_state_paid, local_paid, ss_paid, medicare_paid)
 
-    budget.print_summary()
+    # budget.print_summary()
 
     income = ivan_w2 + olga_w2 + other_income
     contr401k = ivan_401k + olga_401k
@@ -229,12 +232,24 @@ if __name__ == "__main__":
     social_sec_tax = SocialSecurityTax(ivan_w2, olga_w2)
     medicare_tax = MedicareTax(income)
 
-    fed_tax.print_summary()
+    budget_pa = Budget(ivan_w2, olga_w2, other_income, ivan_401k, olga_401k, "PA",
+                    fed_paid, ny_state_paid, local_paid, ss_paid, medicare_paid)
+    budget_pa.print_summary()
     print("===========")
-    state_tax.print_summary()
+
+    budget_ny = Budget(ivan_w2, olga_w2, other_income, ivan_401k, olga_401k, "NY",
+                    fed_paid, ny_state_paid, local_paid, ss_paid, medicare_paid)
+    budget_ny.print_summary()
     print("===========")
-    local_tax.print_summary()
-    print("===========")
-    social_sec_tax.print_summary()
-    print("===========")
-    medicare_tax.print_summary()
+
+    print(f"NY Vs. PA: {budget_ny.total_tax()} - {budget_pa.total_tax()} = {budget_ny.total_tax() - budget_pa.total_tax()}")
+    # print("===========")
+    # fed_tax.print_summary()
+    # print("===========")
+    # state_tax.print_summary()
+    # print("===========")
+    # local_tax.print_summary()
+    # print("===========")
+    # social_sec_tax.print_summary()
+    # print("===========")
+    # medicare_tax.print_summary()

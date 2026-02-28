@@ -230,7 +230,7 @@ class TestBudget:
 
     def test_budget_local_tax(self):
         """Test budget local tax calculation (always PA)."""
-        budget = taxes.Budget(100000, 80000, 5000, 20000, 15000, "NY")
+        budget = taxes.Budget(100000, 80000, 5000, 20000, 15000, "PA")
         local_tax = budget.local_tax()
         expected = 185000 * 0.01  # Always PA rate
         assert local_tax == expected
@@ -286,7 +286,7 @@ class TestBudget:
         budget = taxes.Budget(0, 0, 0, 0, 0, "PA")
         assert budget.total_income == 0
         assert budget.total_tax() == 0
-        assert budget.eff_tax_rate() == 0  # This might cause division by zero, should be handled
+        assert budget.eff_tax_rate() == 0.0  # Should return 0.0, not cause division by zero
 
 
 # Run the existing tests for backward compatibility
